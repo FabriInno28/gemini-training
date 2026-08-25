@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D-Junioren Home-Training | Gelb-Schwarz</title>
+    <style>
+        :root {
+            --bg-color: #0b0b0e;
+            --card-bg: #141418;
+            --yellow: #ffd700;
+            --yellow-hover: #e6c200;
+            --text-light: #ffffff;
+            --text-muted: #9a9ab0;
+            --border: rgba(255, 215, 0, 0.15);
+            --accent-green: #2ecc71;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-light); min-height: 100vh; padding: 20px 15px 40px; }
+
+        .container { max-width: 980px; margin: 0 auto; }
+
+        /* Header */
+        header { text-align: center; margin-bottom: 35px; padding: 15px 0 25px; border-bottom: 2px solid var(--yellow); }
+        header .club-tag { display: inline-block; background: rgba(255, 215, 0, 0.12); color: var(--yellow); font-weight: 800; font-size: 0.8rem; padding: 5px 14px; border-radius: 20px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; border: 1px solid rgba(255,215,0,0.3); }
+        header h1 { font-size: 2.3rem; color: var(--yellow); text-transform: uppercase; letter-spacing: 2px; font-weight: 900; }
+        header p { color: var(--text-muted); font-size: 1rem; margin-top: 6px; }
+
+        .section-title { font-size: 1.2rem; text-transform: uppercase; letter-spacing: 1.5px; color: #fff; margin-bottom: 20px; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+        .section-title::before { content: ''; display: inline-block; width: 6px; height: 22px; background: var(--yellow); border-radius: 3px; }
+
+        /* Photo Grid Übersichtswelt */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        
+        .card { background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border); overflow: hidden; cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); display: flex; flex-direction: column; }
+        .card:hover { transform: translateY(-5px); border-color: var(--yellow); box-shadow: 0 12px 30px rgba(255, 215, 0, 0.15); }
+        
+        .card-img-wrapper { height: 180px; width: 100%; position: relative; overflow: hidden; }
+        .card-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+        .card:hover .card-img { transform: scale(1.06); }
+        .card-badge { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.8); color: var(--yellow); font-size: 0.75rem; font-weight: 800; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--yellow); letter-spacing: 1px; }
+
+        .card-content { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
+        .card h3 { font-size: 1.3rem; color: #fff; margin-bottom: 8px; font-weight: 800; }
+        .card p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.45; margin-bottom: 16px; flex-grow: 1; }
+        
+        .card-footer { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; color: var(--yellow); font-weight: 700; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 12px; }
+
+        /* Detail View (Paket-Seite) */
+        .detail-view { display: none; background: var(--card-bg); border-radius: 20px; border: 2px solid var(--yellow); overflow: hidden; box-shadow: 0 15px 40px rgba(0,0,0,0.6); }
+        .detail-view.active { display: block; animation: slideUp 0.35s ease-out; }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .back-btn { display: inline-flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.6); color: #fff; border: 1px solid #444; padding: 8px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; margin-bottom: 15px; transition: 0.2s; text-decoration: none; font-size: 0.9rem; }
+        .back-btn:hover { background: var(--yellow); color: #000; border-color: var(--yellow); }
+
+        .hero-banner { width: 100%; height: 260px; position: relative; overflow: hidden; }
+        .hero-banner img { width: 100%; height: 100%; object-fit: cover; }
+        .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, var(--card-bg) 5%, transparent 80%); }
+        .hero-title-box { position: absolute; bottom: 20px; left: 24px; right: 24px; }
+        .hero-title-box h2 { font-size: 2rem; color: var(--yellow); font-weight: 900; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
+        .hero-title-box p { color: #fff; font-size: 1rem; margin-top: 4px; text-shadow: 0 1px 5px rgba(0,0,0,0.9); }
+
+        .detail-body { padding: 25px 24px 35px; }
+
+        /* Step Preview List */
+        .exercises-preview { margin-bottom: 30px; background: rgba(0,0,0,0.3); padding: 18px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); }
+        .exercises-preview h4 { color: var(--yellow); font-size: 0.95rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+        .preview-list { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+        .preview-list li { font-size: 0.88rem; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
+        .preview-list li::before { content: '•'; color: var(--yellow); font-size: 1.2rem; }
+
+        /* Active Workout Arena */
+        .workout-arena { text-align: center; padding: 20px 0; border-top: 1px solid rgba(255,255,255,0.1); }
+        
+        .progress-dots { display: flex; justify-content: center; gap: 6px; margin-bottom: 20px; }
+        .dot { width: 30px; height: 6px; background: #2a2a35; border-radius: 3px; transition: 0.3s; }
+        .dot.active { background: var(--yellow); box-shadow: 0 0 10px rgba(255,215,0,0.5); }
+        .dot.completed { background: var(--accent-green); }
+
+        .phase-badge { display: inline-block; background: var(--yellow); color: #000; font-weight: 900; padding: 6px 20px; border-radius: 20px; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; margin-bottom: 15px; }
+        .phase-badge.pause { background: #3a3a45; color: var(--yellow); border: 1px solid var(--yellow); }
+        .phase-badge.atem { background: #1b3b2b; color: #2ecc71; border: 1px solid #2ecc71; }
+
+        .active-ex-title { font-size: 1.8rem; font-weight: 800; color: #fff; margin-bottom: 10px; line-height: 1.2; }
+        .active-ex-desc { color: var(--text-muted); font-size: 1.05rem; max-width: 650px; margin: 0 auto 25px; line-height: 1.5; min-height: 48px; }
+
+        .timer-display { font-size: 5.5rem; font-weight: 900; color: var(--yellow); font-family: 'Courier New', Courier, monospace; margin-bottom: 25px; text-shadow: 0 0 25px rgba(255, 215, 0, 0.25); }
+
+        .btn-group { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+        .btn { background: var(--yellow); color: #000; border: none; padding: 15px 32px; font-weight: 900; font-size: 1.05rem; border-radius: 10px; cursor: pointer; transition: 0.2s; text-transform: uppercase; letter-spacing: 0.5px; }
+        .btn:hover { background: var(--yellow-hover); transform: translateY(-2px); }
+        .btn-secondary { background: transparent; color: #fff; border: 1px solid #444; }
+        .btn-secondary:hover { background: #222; border-color: var(--text-muted); }
+
+        footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-size: 0.85rem; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <span class="club-tag">FC EMMENBRÜCKE • D-JUNIOREN</span>
+        <h1>⚡ HOME-TRAININGSWELT</h1>
+        <p>10 Minuten. Lautlos & ohne Material. Besser werden für dein Team!</p>
+    </header>
+
+    <!-- 1. ÜBERSICHTSWELT (GRID VON FOTO-KARTEN) -->
+    <div id="overview-section">
+        <div class="section-title">Wähle dein Trainings-Paket</div>
+        <div class="grid" id="package-grid"></div>
+    </div>
+
+    <!-- 2. PAKET-DETAIL-SEITE MIT EINEM HAUPTBILD & TRAININGS-ARENA -->
+    <div class="detail-view" id="detail-view">
+        <div style="padding: 15px 20px 0;">
+            <button class="back-btn" onclick="closePackage()">← ZURÜCK ZUR ÜBERSICHT</button>
+        </div>
+
+        <div class="hero-banner">
+            <img id="hero-img" src="" alt="Paket Motivationsbild">
+            <div class="hero-overlay"></div>
+            <div class="hero-title-box">
+                <h2 id="hero-title">01. AGILITÄT & PULS</h2>
+                <p id="hero-desc">Schnelle Fußarbeit & Grundkraft</p>
+            </div>
+        </div>
+
+        <div class="detail-body">
+            <!-- Übungs-Übersicht für dieses Paket -->
+            <div class="exercises-preview">
+                <h4>Inhalt dieses 10-Minuten-Pakets:</h4>
+                <ul class="preview-list" id="preview-list"></ul>
+            </div>
+
+            <!-- Interaktive Trainings-Arena -->
+            <div class="workout-arena">
+                <div class="progress-dots" id="dots-container"></div>
+                <span class="phase-badge" id="phase-badge">ÜBUNG 1 / 4</span>
+                <h3 class="active-ex-title" id="ex-title">Loading...</h3>
+                <p class="active-ex-desc" id="ex-desc">Loading...</p>
+
+                <div class="timer-display" id="timer-display">02:00</div>
+
+                <div class="btn-group">
+                    <button class="btn" id="start-btn" onclick="toggleTimer()">START</button>
+                    <button class="btn btn-secondary" onclick="nextStep()">NÄCHSTE ÜBUNG ➔</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© FC Emmenbrücke D-Junioren | Gelb-Schwarz Power | 100% Lautlos für zu Hause</p>
+    </footer>
+</div>
+
+<script>
+const packages = [
+    {
+        id: 1,
+        name: "01. Agilität & Puls",
+        desc: "Schnelle Fußarbeit auf engstem Raum & Grundkraft für deine Beine.",
+        img: "https://images.unsplash.com/photo-1517649763962-0c623266010b?auto=format&fit=crop&w=800&q=80",
+        steps: [
+            { type: "ÜBUNG 1 / 4", badgeClass: "", title: "2 Schritte Links – Halten – 2 Schritte Rechts", desc: "Schnelle seitliche Schritte auf den Fußballen. Beim Stopp 2 Sekunden leise auf einem Bein balancieren.", time: 120 },
+            { type: "PAUSE", badgeClass: "pause", title: "Durchatmen & Lockern", desc: "Beine ausschütteln, tief durchatmen. Gleich geht's weiter!", time: 30 },
+            { type: "ÜBUNG 2 / 4", badgeClass: "", title: "Slow-Motion Kniebeuge & Hold", desc: "4 Sekunden kontrolliert tief gehen, unten 2 Sekunden halten, leise wieder aufstehen.", time: 120 },
+            { type: "PAUSE", badgeClass: "pause", title: "Fokus auf Balance", desc: "Atme ruhig durch und bereite dich auf die Balance-Übung vor.", time: 30 },
+            { type: "ÜBUNG 3 / 4", badgeClass: "", title: "Einbein-Uhrzeit-Tippen", desc: "Auf dem rechten Standbein stehen. Mit links 12, 3, 6, 9 Uhr antippen. Nach 60 Sek. Bein wechseln.", time: 120 },
+            { type: "PAUSE", badgeClass: "pause", title: "Vorbereitung Atemübung", desc: "Setze dich bequem hin oder lege dich flach auf den Rücken.", time: 30 },
+            { type: "ATEMÜBUNG", badgeClass: "atem", title: "Box Breathing (4-4-4-4)", desc: "4 Sek. Einatmen – 4 Sek. Halten – 4 Sek. Ausatmen – 4 Sek. Halten. Finde volle Ruhe.", time: 120 }
+        ]
+    },
+    {
+        id: 2,
+        name: "02. Standfestigkeit",
+        desc: "Zweikampf-Stabilität & unerschütterliche Balance im Spiel.",
+        img: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=800&q=80",
+        steps: [
+            { type: "ÜBUNG 1 / 4", badgeClass: "", title: "Katzen-Trippeln (Quiet Taps)", desc: "Superleise und extrem flink auf den Fußballen arbeiten, absolut ohne Bodenpoltern.", time: 120 },
+            { type: "PAUSE", badgeClass: "pause", title: "Kurze Pause", desc: "Puls kurz absenken und tief einatmen.", time: 30 },
+            { type: "ÜBUNG 2 / 4", badgeClass: "", title: "Plank mit Schulter-Tipp", desc: "Liegestützposition halten. Abwechselnd ruhig die gegenüberliegende Schulter berühren. Die Hüfte bleibt stabil!", time: 120 },
+            { type: "PAUSE", badgeClass: "pause", title: "Durchatmen", desc: "Handgelenke und Arme kurz lockern.", time: 30 },
+            { type: "ÜBUNG 3 / 4", badgeClass: "", title: "Einbeinstand & Pass-Imitation", desc: "Auf einem Bein balancieren und mit dem Spielbein eine saubere Innenseiten-Passbewegung in der Luft ausführen.", time: 120 },
+            { type: "PAUSE", badgeClass: "pause", title: "Bereit machen", desc: "Ruhige Sitz- oder Liegeposition einnehmen.", time: 30 },
+            { type: "ATEMÜBUNG", badgeClass: "atem", title: "Tiefe Zwerchfell-Atmung", desc: "Tief durch die Nase in den Bauch einatmen (3s), langsam durch den Mund ausatmen (6s).", time: 120 }
+        ]
+    },
+    {
+        id: 3,
+        name: "03. Core & Control",
+        desc: "Starker Rumpf & volle Körperbeherrschung für mehr Dynamik.",
+        img: "https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=800&q=80",
+        steps: [
+            { type: "ÜBUNG 1 / 4", badgeClass: "", title: "Seitliche Ausfallschritte (Side Lunges)", desc: "Abwechselnd tief nach links und rechts steppen. Rücken gerade, leise abrollen.", time: 120 },
+            { type: "PAUSE", badgeClass: "pause", title: "Durchatmen", desc: "Körper entspannen.", time: 30 },
+            { type: "ÜBUNG 2 / 4", badgeClass: "", title: "Side Plank Hold (Seitlicher Stütz)", desc: "60 Sek. auf der rechten Seite halten, dann 60 Sek. auf der linken Seite. Körperspannung halten!", time: 120 },
+            { type: "PAUSE", badgeClass: "pause", title: "Lockerlassen", desc: "Kurz durchbewegen.", time: 30 },
+            { type: "ÜBUNG 3 / 4", badgeClass: "", title: "Standwaage mit Blickwechsel", desc: "Auf einem Bein stehen, Oberkörper waagerecht. Kopf langsam nach links und rechts drehen.", time: 120 },
+            { type: "PAUSE", badgeClass: "pause", title: "Herunterfahren", desc: "In eine gemütliche Haltung wechseln.", time: 30 },
+            { type: "ATEMÜBUNG", badgeClass: "atem", title: "Herzschlag-Verlangsamer", desc: "Tief durch die Nase einatmen, beim Ausatmen die Lippen leicht geschlossen halten (Lippenbremse).", time: 120 }
+        ]
+    },
+    {
+        id: 4,
+        name: "04. Reaktions-Kopf",
+        desc: "Mentale Reaktionsschnelligkeit & fokussierter Kopf.",
+        img: "https://images.unsplash.com/photo-1526232761682-d26e03ac148e?auto=format&fit=crop&w=800&q=80",
+        steps: [
+            { type: "ÜBUNG 1 / 4", badgeClass: "", title: "Schatten-Fußarbeit (Signal-Stopp)", desc: "Auf der Stelle leise bewegen. Wenn du im Kopf 'STOPP' denkst, sofort bombenfest einfrieren.", time: 120 },
+            { type: "PAUSE", badgeClass: "pause", title: "Durchatmen", desc: "Fokus auf die nächste Übung schärfen.", time: 30 },
+            { type: "ÜBUNG 2 / 4", badgeClass: "", title: "Tiefer Ausfallschritt-Hold", desc: "Im Ausfallschritt tief bleiben (Knie knapp über dem Boden). Nach 60 Sek. Bein wechseln.", time: 120 },
+            { type: "PAUSE", badgeClass: "pause", title: "Muskeln lockern", desc: "Beine ausschütteln.", time: 30 },
+            { type: "ÜBUNG 3 / 4", badgeClass: "", title: "Augen-Zu-Einbeinbalance", desc: "Auf einem Bein stehen und die Augen schließen. Versuche 15 Sek. ohne Wackeln zu halten. Bein wechseln.", time: 120 },
+            { type: "PAUSE", badgeClass: "pause", title: "Entspannung einleiten", desc: "Augen langsam öffnen, tief ausatmen.", time: 30 },
+            { type: "ATEMÜBUNG", badgeClass: "atem", title: "4-7-8 Beruhigungs-Atmung", desc: "4 Sek. Einatmen – 7 Sek. Halten – 8 Sek. langsam Ausatmen. Bringt volle Erholung.", time: 120 }
+        ]
+    },
+    {
+        id: 5,
+        name: "05. Beinkraft Pur",
+        desc: "Oberschenkel-Power & stabile Knieachse für den Platz.",
+        img: "https://images.unsplash.com/photo-1434682881908-b43d0467b798?auto=format&fit=crop&w=800&q=80",
+        steps: [
+            { type: "ÜBUNG 1 / 4", badgeClass: "", title: "Tiefe Sidesteps ohne Anheben", desc: "In tiefer Kniebeuge-Position leise seitlich hin und her gleiten. Knie bleiben gebeugt!", time: 120 },
+            { type: "PAUSE", badgeClass: "pause", title: "Beine ausschütteln", desc: "Oberschenkel kurz lockern.", time: 30 },
+            { type: "ÜBUNG 2 / 4", badgeClass: "", title: "Wandsitz (Wall Sit)", desc: "Rücken an die Wand, Knie im 90-Grad-Winkel. Durchhalten und Zähne zusammenbeißen!", time: 120 },
+            { type: "PAUSE", badgeClass: "pause", title: "Durchatmen", desc: "Tief in den Bauch atmen.", time: 30 },
+            { type: "ÜBUNG 3 / 4", badgeClass: "", title: "Einbein-Kniebeuge (Pistol-Progression)", desc: "Auf einem Bein langsam so tief wie möglich absenken und kontrolliert wieder aufrichten.", time: 120 },
+            { type: "PAUSE", badgeClass: "pause", title: "Puls senken", desc: "Aufrecht stehen oder sitzen.", time: 30 },
+            { type: "ATEMÜBUNG", badgeClass: "atem", title: "Nasen-Fokus-Atmung", desc: "Ausschließlich durch die Nase atmen. Den kühlen Luftstrom an der Nasenspitze wahrnehmen.", time: 120 }
+        ]
+    },
+    {
+        id: 6,
+        name: "06. Dynamische Balance",
+        desc: "Sprunggelenk-Stabilität & Bandapparat kräftigen.",
+        img: "https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&w=800&q=80",
+        steps: [
+            { type: "ÜBUNG 1 / 4", badgeClass: "", title: "Skater-Step mit Landekontrolle", desc: "Breiter Schritt zur Seite, leise landen und 2 Sekunden wie festgenagelt stehen.", time: 120 },
+            { type: "PAUSE", badgeClass: "pause", title: "Pause", desc: "Gleichmäßig durchatmen.", time: 30 },
+            { type: "ÜBUNG 2 / 4", badgeClass: "", title: "Bären-Halten (Bear Crawl Hold)", desc: "Vierfüßlerstand, Knie 2 cm vom Boden anheben. Rücken flach wie ein Tisch. Position halten.", time: 120 },
+            { type: "PAUSE", badgeClass: "pause", title: "Arme ausschütteln", desc: "Handgelenke und Schultern kreisen.", time: 30 },
+            { type: "ÜBUNG 3 / 4", badgeClass: "", title: "Standbein-Achter kreisen", desc: "Auf einem Bein stehen. Das freie Bein beschreibt eine flüssige '8' in der Luft.", time: 120 },
+            { type: "PAUSE", badgeClass: "pause", title: "Zur Ruhe kommen", desc: "Bequem hinsetzen.", time: 30 },
+            { type: "ATEMÜBUNG", badgeClass: "atem", title: "Wechselatmung (Nadi Shodhana)", desc: "Rechtes Nasenloch zuhalten – links einatmen. Links zuhalten – rechts ausatmen. Bringt Fokus.", time: 120 }
+        ]
+    },
+    {
+        id: 7,
+        name: "07. Körperbeherrschung",
+        desc: "Feingefühl, Bewegungskoordination & Körperwahrnehmung.",
+        img: "https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?auto=format&fit=crop&w=800&q=80",
+        steps: [
+            { type: "ÜBUNG 1 / 4", badgeClass: "", title: "Doppel-Tipp auf Einbein", desc: "Auf links stehen: Rechts 2x schnell vorne, 2x seitlich, 2x hinten tippen. Dann Bein wechseln.", time: 120 },
+            { type: "PAUSE", badgeClass: "pause", title: "Pause", desc: "Locker durchatmen.", time: 30 },
+            { type: "ÜBUNG 2 / 4", badgeClass: "", title: "Einbeiniges Beckenheben (Glute Bridge)", desc: "Rückenlage, ein Bein aufgestellt, das andere gestreckt. Hüfte hochdrücken und oben halten.", time: 120 },
+            { type: "PAUSE", badgeClass: "pause", title: "Lockerlassen", desc: "Knie kurz zur Brust ziehen.", time: 30 },
+            { type: "ÜBUNG 3 / 4", badgeClass: "", title: "Kopf-Hand-Fokus", desc: "Im Einbeinstand mit der rechten Hand abwechselnd die linke Schulter und rechte Hüfte tippen.", time: 120 },
+            { type: "PAUSE", badgeClass: "pause", title: "Vorbereitung Atemübung", desc: "Ruhig flach auf den Rücken legen.", time: 30 },
+            { type: "ATEMÜBUNG", badgeClass: "atem", title: "Langsame Bauchatmung", desc: "Hand auf den Bauch legen. Spüren, wie sich der Bauch beim Einatmen hebt und beim Ausatmen senkt.", time: 120 }
+        ]
+    },
+    {
+        id: 8,
+        name: "08. Isometrische Power",
+        desc: "Maximale Körperspannung & Kraft ohne Bewegungslärm.",
+        img: "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=800&q=80",
+        steps: [
+            { type: "ÜBUNG 1 / 4", badgeClass: "", title: "Antritts-Stopp im tiefen Stand", desc: "Explosiver Antrittsschritt nach vorne – sofort leise stoppen und 3 Sekunden wie eine Statue halten.", time: 120 },
+            { type: "PAUSE", badgeClass: "pause", title: "Pause", desc: "Beine ausschütteln.", time: 30 },
+            { type: "ÜBUNG 2 / 4", badgeClass: "", title: "Liegestütz-Hold (Push-Up Hold)", desc: "In halber Liegestützhöhe halten (oder auf den Knien). Maximale Rumpf- und Brustspannung.", time: 120 },
+            { type: "PAUSE", badgeClass: "pause", title: "Arme auslockern", desc: "Schultern entlasten.", time: 30 },
+            { type: "ÜBUNG 3 / 4", badgeClass: "", title: "Flieger-Balance", desc: "Einbeinstand, Arme wie Flugzeugflügel ausbreiten. Oberkörper neigen und stabil bleiben.", time: 120 },
+            { type: "PAUSE", badgeClass: "pause", title: "Entspannung vorbereiten", desc: "Sitzen oder hinlegen.", time: 30 },
+            { type: "ATEMÜBUNG", badgeClass: "atem", title: "Puls-Drop Visualisierung", desc: "Tief ausatmen und dir vorstellen, wie mit jedem Ausatmen dein Puls um 5 Schläge sinkt.", time: 120 }
+        ]
+    },
+    {
+        id: 9,
+        name: "09. Mentale Schärfe",
+        desc: "Konzentration, Schnellstopp & mentale Durchhaltekraft.",
+        img: "https://images.unsplash.com/photo-1508215885820-4585e56135c8?auto=format&fit=crop&w=800&q=80",
+        steps: [
+            { type: "ÜBUNG 1 / 4", badgeClass: "", title: "Quick Feet & Freeze", desc: "5 Sekunden ultraschnelles leises Trippeln auf Zehenspitzen -> ZACK: sofort tief einfrieren.", time: 120 },
+            { type: "PAUSE", badgeClass: "pause", title: "Pause", desc: "Tief durchatmen.", time: 30 },
+            { type: "ÜBUNG 2 / 4", badgeClass: "", title: "Schildkröte (Dead Bug Stabilität)", desc: "Rückenlage, Beine 90 Grad. Abwechselnd rechten Arm & linkes Bein langsam zum Boden absenken.", time: 120 },
+            { type: "PAUSE", badgeClass: "pause", title: "Rücken entspannen", desc: "Kurz durchatmen.", time: 30 },
+            { type: "ÜBUNG 3 / 4", badgeClass: "", title: "Orientierungs-Tippen 180°", desc: "Einbeinstand. Mit dem Spielbein 180 Grad um das Standbein tippen ohne Gleichgewicht zu verlieren.", time: 120 },
+            { type: "PAUSE", badgeClass: "pause", title: "Ruhephase", desc: "Augen schließen.", time: 30 },
+            { type: "ATEMÜBUNG", badgeClass: "atem", title: "Regenerations-Atmung", desc: "4 Sek. tief durch die Nase einatmen, 6 Sek. durch den leicht geöffneten Mund hauchen.", time: 120 }
+        ]
+    },
+    {
+        id: 10,
+        name: "10. Profi-Allrounder",
+        desc: "Das ultimative Matchday-Set für Beine, Rumpf & Kopf.",
+        img: "https://images.unsplash.com/photo-1529900748604-07564a03e7a6?auto=format&fit=crop&w=800&q=80",
+        steps: [
+            { type: "ÜBUNG 1 / 4", badgeClass: "", title: "Schnell-Schritt & Richtungswechsel", desc: "Zwei schnelle leise Steps links, Ausfallschritt-Stopp, zwei Steps rechts.", time: 120 },
+            { type: "PAUSE", badgeClass: "pause", title: "Pause", desc: "Kurz auslockern.", time: 30 },
+            { type: "ÜBUNG 2 / 4", badgeClass: "", title: "Kniebeuge mit Hold & Rise", desc: "2 Sek. runter, 3 Sek. unten halten, kraftvoll leise hochkommen.", time: 120 },
+            { type: "PAUSE", badgeClass: "pause", title: "Ausschütteln", desc: "Gleichmäßig tief durchatmen.", time: 30 },
+            { type: "ÜBUNG 3 / 4", badgeClass: "", title: "Match-Balance (Kopfball-Finishing)", desc: "Einbeinstand, Arme oben, Kopfball-Bewegung imitieren ohne zu springen.", time: 120 },
+            { type: "PAUSE", badgeClass: "pause", title: "Finale Ruhe", desc: "Bequem positionieren.", time: 30 },
+            { type: "ATEMÜBUNG", badgeClass: "atem", title: "Champion-Atmung", desc: "Tief einatmen (Energie tanken), langsam ausatmen (Stärke & Ruhe spüren). Du bist bereit!", time: 120 }
+        ]
+    }
+];
+
+let currentPkg = null;
+let currentStepIdx = 0;
+let timeLeft = 0;
+let timerInterval = null;
+let isRunning = false;
+
+// Audio Sound Effect
+function playSound(freq = 800, type = 'sine', duration = 0.15) {
+    try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+    } catch (e) {}
+}
+
+function renderOverview() {
+    const grid = document.getElementById('package-grid');
+    grid.innerHTML = packages.map((pkg) => `
+        <div class="card" onclick="openPackage(${pkg.id})">
+            <div class="card-img-wrapper">
+                <img class="card-img" src="${pkg.img}" alt="${pkg.name}">
+                <span class="card-badge">10 MINUTEN</span>
+            </div>
+            <div class="card-content">
+                <h3>${pkg.name}</h3>
+                <p>${pkg.desc}</p>
+                <div class="card-footer">
+                    <span>4 ÜBUNGEN + ATEM</span>
+                    <span>STARTEN ➔</span>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function openPackage(id) {
+    currentPkg = packages.find(p => p.id === id);
+    currentStepIdx = 0;
+
+    // Populate Hero & Details
+    document.getElementById('hero-img').src = currentPkg.img;
+    document.getElementById('hero-title').innerText = currentPkg.name;
+    document.getElementById('hero-desc').innerText = currentPkg.desc;
+
+    // Populate Exercise Preview List (Only the 4 exercises + breathwork)
+    const exerciseSteps = currentPkg.steps.filter(s => s.type !== "PAUSE");
+    document.getElementById('preview-list').innerHTML = exerciseSteps.map(s => `<li>${s.title}</li>`).join('');
+
+    // Toggle Views
+    document.getElementById('overview-section').style.display = 'none';
+    document.getElementById('detail-view').classList.add('active');
+    
+    renderDots();
+    loadStep();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function closePackage() {
+    clearInterval(timerInterval);
+    isRunning = false;
+    document.getElementById('detail-view').classList.remove('active');
+    document.getElementById('overview-section').style.display = 'block';
+    document.getElementById('start-btn').innerText = "START";
+}
+
+function renderDots() {
+    const container = document.getElementById('dots-container');
+    container.innerHTML = currentPkg.steps.map((_, i) => `<div class="dot ${i === 0 ? 'active' : ''}" id="dot-${i}"></div>`).join('');
+}
+
+function updateDots() {
+    currentPkg.steps.forEach((_, i) => {
+        const dot = document.getElementById(`dot-${i}`);
+        if (!dot) return;
+        dot.className = 'dot';
+        if (i < currentStepIdx) dot.classList.add('completed');
+        else if (i === currentStepIdx) dot.classList.add('active');
+    });
+}
+
+function loadStep() {
+    const step = currentPkg.steps[currentStepIdx];
+    const badge = document.getElementById('phase-badge');
+    badge.innerText = step.type;
+    badge.className = 'phase-badge ' + (step.badgeClass || '');
+
+    document.getElementById('ex-title').innerText = step.title;
+    document.getElementById('ex-desc').innerText = step.desc;
+    timeLeft = step.time;
+    updateDisplay();
+    updateDots();
+}
+
+function updateDisplay() {
+    const mins = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+    const secs = (timeLeft % 60).toString().padStart(2, '0');
+    document.getElementById('timer-display').innerText = `${mins}:${secs}`;
+}
+
+function toggleTimer() {
+    if (isRunning) {
+        clearInterval(timerInterval);
+        document.getElementById('start-btn').innerText = "WEITER";
+    } else {
+        playSound(600, 'sine', 0.1);
+        timerInterval = setInterval(() => {
+            if (timeLeft > 0) {
+                timeLeft--;
+                if (timeLeft <= 3 && timeLeft > 0) playSound(700, 'sine', 0.1);
+                updateDisplay();
+            } else {
+                clearInterval(timerInterval);
+                playSound(1000, 'sine', 0.3);
+                nextStep();
+            }
+        }, 1000);
+        document.getElementById('start-btn').innerText = "PAUSE";
+    }
+    isRunning = !isRunning;
+}
+
+function nextStep() {
+    clearInterval(timerInterval);
+    isRunning = false;
+    document.getElementById('start-btn').innerText = "START";
+    if (currentStepIdx < currentPkg.steps.length - 1) {
+        currentStepIdx++;
+        loadStep();
+        toggleTimer();
+    } else {
+        playSound(1200, 'sine', 0.5);
+        alert("🎉 STARKE LEISTUNG! Training abgeschlossen.");
+        closePackage();
+    }
+}
+
+renderOverview();
+</script>
+</body>
+</html>
